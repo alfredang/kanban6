@@ -4,6 +4,8 @@ A single-file IT PMO Kanban board for demos and training, built with plain HTML,
 
 **Live demo:** https://alfredang.github.io/kanban6/
 
+![IT PMO Kanban board showing the Backlog, In Progress, Blocked and Done columns](docs/screenshot.png)
+
 ## Features
 
 - Four columns: Backlog, In Progress, Blocked and Done. Move cards by drag and drop or with the keyboard-friendly "Move ▸" control.

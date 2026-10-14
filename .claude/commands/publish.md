@@ -1,7 +1,7 @@
 ---
 description: Security-scan the project, then push it to GitHub with a README, About section and GitHub Pages deploy
 argument-hint: "[owner/repo or repo URL] [public|private] [branch]"
-allowed-tools: Bash, PowerShell, Read, Edit, Write, Grep, Glob
+allowed-tools: Bash, PowerShell, Read, Edit, Write, Grep, Glob, mcp__playwright__browser_resize, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_close
 ---
 
 # Publish this project to GitHub
@@ -56,7 +56,9 @@ Read `index.html`, `CLAUDE.md` and the existing `README.md`. Then update `README
 - Deployment: GitHub Pages through `.github/workflows/pages.yml`.
 - A short disclaimer that this is a fictitious demo and isn't affiliated with any real bank.
 
-Don't add badges, images or claims you can't verify. Don't put any email address in the README.
+- A screenshot directly under the Live demo link: `![IT PMO Kanban board showing the Backlog, In Progress, Blocked and Done columns](docs/screenshot.png)`. Step 7 captures or refreshes the image.
+
+Don't add badges, other images or claims you can't verify. Don't put any email address in the README.
 
 ## 3. Create or update the GitHub Pages workflow
 
@@ -92,7 +94,19 @@ If the file already matches, leave it alone. If the branch differs from the one 
 3. Confirm the site URL with `gh api repos/<owner/name>/pages --jq .html_url`.
 4. If the run fails, show the failing step with `gh run view <id> --log-failed`, fix the problem if it's in the workflow, and ask before pushing again.
 
-## 7. Report
+## 7. Capture the README screenshot
+
+Run this once the deploy in step 6 has succeeded, so the screenshot shows the live site.
+
+1. With the Playwright MCP tools, resize the browser to 1440×900 (`browser_resize`), open the live Pages URL (`browser_navigate`), and save a viewport screenshot to `docs/screenshot.png` (`browser_take_screenshot` with `scale: "css"`). Then close the browser (`browser_close`).
+   If the Playwright MCP tools aren't available, tell the user and skip this step.
+2. Look at the image. It should show the header, summary strip, filter bar and all four columns with seed cards. Don't open the Add Task modal or change the board first. A 404 for `favicon.ico` in the console is harmless.
+3. Make sure the README has the screenshot line from step 2, and that `.playwright-mcp/` is in `.gitignore` (Playwright writes logs and snapshots there). Delete the `.playwright-mcp/` folder.
+4. Stage `docs/screenshot.png` (plus `README.md` and `.gitignore` if they changed) by name, commit with a message such as `Update README screenshot`, and push as in step 4. **Never force-push.** If the image is byte-identical to the committed one, skip the commit.
+
+The screenshot isn't copied into `_site`, so it lives only in the repo for the README.
+
+## 8. Report
 
 Finish with a short summary:
 - The security scan result, including any findings the user accepted.
@@ -100,4 +114,5 @@ Finish with a short summary:
 - What changed in the README and the workflow (or "unchanged").
 - The About description and topics.
 - The live Pages URL and whether the deploy succeeded.
+- Whether the screenshot was captured and pushed (or why it was skipped).
 - Any manual follow-ups, such as clicking the FormSubmit activation email or rotating a key.
